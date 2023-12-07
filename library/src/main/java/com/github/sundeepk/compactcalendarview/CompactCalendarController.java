@@ -816,8 +816,8 @@ class CompactCalendarController {
                             yPosition += indicatorOffset;
                         }
 
-                        if (eventsList.size() >= 3) {
-                            drawEventsWithPlus(canvas, xPosition, yPosition, eventsList);
+                        else if (eventsList.size() >= 3) {
+                            drawThree(canvas, xPosition, yPosition, eventsList);
                         } else if (eventsList.size() == 2) {
                             drawTwoEvents(canvas, xPosition, yPosition, eventsList);
                         } else if (eventsList.size() == 1) {
@@ -841,23 +841,22 @@ class CompactCalendarController {
         drawEventIndicatorCircle(canvas, xPosition + (xIndicatorOffset * 1), yPosition, eventsList.get(1).getColor());
     }
 
+    private void drawThrEvents(Canvas canvas, float xPosition, float yPosition, List<Event> eventsList) {
+        //draw fist event just left of center
+        drawEventIndicatorCircle(canvas, xPosition + (xIndicatorOffset * -1), yPosition, eventsList.get(0).getColor());
+        //draw second event just right of center
+        drawEventIndicatorCircle(canvas, xPosition + (xIndicatorOffset * 1), yPosition, eventsList.get(1).getColor());
+    }
+
     //draw 2 eventsByMonthAndYearMap followed by plus indicator to show there are more than 2 eventsByMonthAndYearMap
-    private void drawEventsWithPlus(Canvas canvas, float xPosition, float yPosition, List<Event> eventsList) {
+    private void drawThree(Canvas canvas, float xPosition, float yPosition, List<Event> eventsList) {
         // k = size() - 1, but since we don't want to draw more than 2 indicators, we just stop after 2 iterations so we can just hard k = -2 instead
         // we can use the below loop to draw arbitrary eventsByMonthAndYearMap based on the current screen size, for example, larger screens should be able to
         // display more than 2 evens before displaying plus indicator, but don't draw more than 3 indicators for now
         for (int j = 0, k = -2; j < 3; j++, k += 2) {
             Event event = eventsList.get(j);
             float xStartPosition = xPosition + (xIndicatorOffset * k);
-            if (j == 2) {
-                dayPaint.setColor(multiEventIndicatorColor);
-                dayPaint.setStrokeWidth(multiDayIndicatorStrokeWidth);
-                canvas.drawLine(xStartPosition - smallIndicatorRadius, yPosition, xStartPosition + smallIndicatorRadius, yPosition, dayPaint);
-                canvas.drawLine(xStartPosition, yPosition - smallIndicatorRadius, xStartPosition, yPosition + smallIndicatorRadius, dayPaint);
-                dayPaint.setStrokeWidth(0);
-            } else {
-                drawEventIndicatorCircle(canvas, xStartPosition, yPosition, event.getColor());
-            }
+            drawEventIndicatorCircle(canvas, xStartPosition, yPosition, event.getColor());
         }
     }
 
